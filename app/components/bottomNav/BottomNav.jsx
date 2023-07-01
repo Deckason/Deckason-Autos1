@@ -27,7 +27,7 @@ const BottomNav = () => {
                             <Image className={styles.nigerFlag}
                                     src={NigerFlag}
                                     width={1}
-                                    height={1}
+                                    height={5}
                                     alt=""
                             />
                         </div>

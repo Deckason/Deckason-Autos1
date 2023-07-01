@@ -25,15 +25,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-size: 2rem;
     cursor: pointer;
 }
 
-.bottom_nav_box .bottom_nav_icon{
-    font-size: 1.2rem;
-}
-
-.bottom_nav_box p{
-    font-size: small;
+.bottom_nav_box a p,
+.extras p{
+    font-size: large;
 }
 
 .bottom_nav_box a:active{
@@ -45,7 +43,7 @@
 }
 
 .nigerFlag{
-    font-size: 1px;
+    width: 2rem;
     object-fit: cover;
 }
 
@@ -57,23 +55,18 @@
 }
 
 @media only screen and (max-width: 450px){
-    .bottom_nav_box .bottom_nav_icon{
-        font-size: 1rem;
-    }
-    
-    .bottom_nav_box p{
-        font-size: smaller;
-    }
-
-}
-@media only screen and (max-width: 350px){
     .bottom_nav_box a,
     .extras{
-        font-size: 1rem;
+        font-size: 1.5rem;
     }
 
-    .bottom_nav_box p{
-        font-size: x-small;
-    }
-    
+    .bottom_nav_box a p,
+.extras p{
+    font-size: small;
+}
+
+.nigerFlag{
+    width: 1.5rem;
+}
+
 }
