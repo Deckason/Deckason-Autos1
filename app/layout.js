@@ -20,6 +20,7 @@ export default function RootLayout({ children }) {
         {children}
         <BottomNav />
         <Footer />
+        {/* added the develope branch */}
         </body>
     </html>
   )
