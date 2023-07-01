@@ -122,6 +122,12 @@
     border-top: 1px solid grey;
 }
 
+@media screen and (max-width: 768px) {
+    .category li{
+        justify-content: flex-start;
+    }
+}
+
 @media screen and (max-width: 300px) {
 
     .contact, .link, .categories{

@@ -59,6 +59,7 @@
 @media only screen and (max-width: 350px){
     .bottom_nav_box a,
     .extras{
-        font-size: .8rem;
+        font-size: .5rem;
     }
+    
 }
