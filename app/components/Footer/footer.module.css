@@ -10,10 +10,10 @@
 .footer .footer_socials{
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    gap: 2rem;
+    /* gap: 2rem; */
 }
 
 .footer h1{
