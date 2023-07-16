@@ -2,6 +2,7 @@ import AsideNav from './components/AsideNav/AsideNav'
 import Footer from './components/Footer/Footer'
 import BottomNav from './components/bottomNav/BottomNav'
 import Nav from './components/nav/nav'
+import ContextProvider from './context/ContextProvider'
 import './globals.css'
 // import { Inter } from 'next/font/google'
 
@@ -16,11 +17,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body >
+        <ContextProvider>
         <Nav />
         {children}
         <BottomNav />
         <Footer />
         {/* added the develope branch */}
+        </ContextProvider>
         </body>
     </html>
   )

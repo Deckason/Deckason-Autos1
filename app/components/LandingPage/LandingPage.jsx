@@ -1,7 +1,11 @@
+"use client"
 import Image from "next/image";
 import styles from "./LandingPage.module.css"
 import LandingPageImg from "../../../public/media/car images/FB_IMG_1615749109920.jpg"
+import { useAppContext } from "@/app/context/ContextProvider";
 const LandingPage = () => {
+    // const {snap} = useAppContext()
+    // console.log(`snapshot ${snap}`)
     return (
         <>
             <div className={styles.landing_page}>
