@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 import styles from "./products.module.css"
 import Image from "next/image";
@@ -8,9 +9,29 @@ import {GiSpanner, GiNotebook} from "react-icons/gi"
 import {TbCurrencyNaira} from "react-icons/tb"
 import product_img_1 from "../../../public/media/car images/FB_IMG_1615720872137.jpg"
 import product_img_2 from "../../../public/media/car images/FB_IMG_16223932793306100.jpg"
+import { useAppContext } from "@/app/context/ContextProvider";
+import { useState } from "react";
 
 
 const Products = () => {
+    const [products, setProducts] = useState([])
+    const { getDocument, collectionRef} = useAppContext()
+    
+    const getProducts = async ()=>{
+        let carDocs = []
+        try {
+            const snapshot = await getDocument(collectionRef)
+            snapshot.docs.forEach(product => {
+                carDocs.push({...product.data(), id: product.id})
+            });
+            setProducts(carDocs)
+        } catch (error) {
+            
+        }
+    }
+
+    getProducts()
+    // console.log(products)
 
     const carList = [
         {
@@ -81,29 +102,29 @@ const Products = () => {
                     </div>
                     <div className={styles.products}>
                     {
-                        carList.map(car =>(
-                            <div className={styles.product_card}>
+                        products.map(car =>(
+                            <div className={styles.product_card} key={car.key}>
                                 <div className={styles.product_img}>
                                     <Image 
                                         height={100}
                                         width={300}
                                         alt=""
                                         style={{'objectFit':"cover"}}
-                                        src={product_img_1}
+                                        src={car.productImages[0]}
                                         className={styles.img_wrapper}
                                     />
                                     <p className={styles.price_tag}><TbCurrencyNaira/>{car.price}</p>
                                 </div>
                                 <div className={styles.product_description}>
-                                    <h4 className={styles.product_name}>{car.name}</h4>
+                                    <h4 className={styles.product_name}>{`${car.year} ${car.make} ${car.model}`}</h4>
                                     <div className={styles.other_details}>
                                         <div className={styles.left_details}>
-                                            <p className={styles.product_location}><ImLocation2 /> {car.location}</p>
+                                            <p className={styles.product_location}><ImLocation2 /> {`${car.region} ${car.state}`}</p>
                                             <p className={styles.product_mileage}><MdSpeed /> {car.mileage}</p>
                                         </div>
                                         <div className={styles.right_details}>
                                             <p className={styles.product_condition}><GiSpanner /> {car.condition}</p>
-                                            <p className={styles.product_register}><GiNotebook /> {car.registration}</p>
+                                            <p className={styles.product_register}><GiNotebook /> {car.registrationStatus}</p>
                                         </div>
                                     </div>
                                     <div className={styles.price}>

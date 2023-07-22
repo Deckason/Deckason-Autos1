@@ -5,13 +5,13 @@ import ProductForm from "./ProductForm/ProductForm";
 import { authentication } from "../utils/firebaseConfiguration";
 
 const PostProduct = () => {
-    const {loggedIn, user, isVerified} = useAppContext()
+    const { isVerified} = useAppContext()
     const {push} = useRouter()
-    console.log(isVerified, authentication.currentUser)
+    console.log(authentication.currentUser)
     return (
         <>
-            {isVerified && <ProductForm />}
-            {!isVerified && <h1>Not Yet Verified</h1>}
+            {authentication.currentUser?<ProductForm />:push("/auth")}
+            {/* {!isVerified && <h1>Not Yet Verified</h1>} */}
         </>
     );
 }

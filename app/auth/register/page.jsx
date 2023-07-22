@@ -21,26 +21,26 @@ const Register = () => {
     })
 
     const {push} = useRouter()
-    const {creatAccount, isLoading, setIsLoading, user,
+    const {creatAccount, isLoading, setIsLoading, currentUser,
         setIsVerified, usersRef, addDocument} = useAppContext()
 
-        console.log(authentication.currentUser)
+        // console.log("Authentication "+authentication, "AuthCurrentUser "+authentication.currentUser, "stateUser "+currentUser)
 
     const handleRegister = async (data)=>{
         try {
             setIsLoading(true)
             setIsVerified(false)
             const res = await creatAccount(data.email, data.password)
-            if (res) {
-                const userDetails = {
-                    userId: res.user.uid,
-                    username: data.username,
-                    email: res.user.email,
-                    verified: false
-                }
-                const user = await addDocument(usersRef, userDetails)
-                user?push("/post-product"):""
-            }
+            // if (res) {
+            //     const userDetails = {
+            //         userId: res.user.uid,
+            //         username: data.username,
+            //         email: res.user.email,
+            //         verified: false
+            //     }
+            //     const user = await addDocument(usersRef, userDetails)
+                res?push("/post-product"):""
+            // }
             setIsLoading(false)
         }catch (error) {
             setIsLoading(false)

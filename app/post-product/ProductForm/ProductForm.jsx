@@ -1,17 +1,19 @@
 "use client"
-import { useForm } from "react-hook-form"
+import { set, useForm } from "react-hook-form"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import styles from "./ProductForm.module.css"
 import { useAppContext } from "@/app/context/ContextProvider";
-import { ref, uploadBytes } from "firebase/storage"
+import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from "firebase/storage"
 import Image from "next/image";
 import { useEffect, useState} from "react";
 import { storage } from "@/app/utils/firebaseConfiguration"
 
 const ProductForm = () => {
-    const {collectionRef, addDocument, isLoading, setIsLoading } = useAppContext()
+    const {collectionRef, addDocument, isLoading, setIsLoading, singleDoc, updateDocument, } = useAppContext()
     const [files, setFiles] = useState([])
+    const [progress, setProgress] = useState("")
+    const [productImages, setProductImages] = useState([])
 
     const schema = yup.object().shape({
         state: yup.string().required("State is required!"),
@@ -34,34 +36,53 @@ const ProductForm = () => {
     const { register, handleSubmit, formState:{errors} } = useForm({
         resolver: yupResolver(schema)
     })
-
+    
+    const uploadDocImages = async(array, id)=>{
+        try {
+            for (let i = 0; i < files.length; i++) {
+                const imageRef = ref(storage, `images/${id}/${Date.now()}${files[i].name}`)
+                const uploadImg = await uploadBytesResumable(imageRef, files[i])
+                .then((snapshot)=>{
+                    // console.log(snapshot.bytesTransferred)
+                    setProgress((snapshot.bytesTransferred / snapshot.totalBytes)*100)
+                    getDownloadURL(snapshot.ref).then((url)=>{
+                        array.push(...[url])
+                    //    setProductImages(prev=>[...prev, url])
+                        updateDocument(id, {
+                            productImages: array,
+                        })
+                        // updateImages?console.log("Images url updated"):console.log("Images url not updated")
+                    }).catch(err=>{
+                        console.log(err.message)
+                    })
+                }).catch((err)=>{
+                    setIsLoading(false)
+                    console.log(err.message)
+                })
+            }
+            console.log("Urls added completed")
+        } catch (error) {
+            console.log(error)
+        }
+    }
     
     const submit = async (data)=>{
-        // data = {...data, posterId: 1}
-        // console.log(data)
+        data = {...data, productImages: []}
         try {
+            let urlArray = []
            if (files.length>0) {
             setIsLoading(true)
             const doc = await addDocument(collectionRef, data)
             if (doc) {
-                for (let i = 0; i < files.length; i++) {
-                    console.log(files[i].name)
-                    const imageRef = ref(storage, `images/${doc.id}/${Date.now()}${files[i].name}`)
-                    const uploadImg = await uploadBytes(imageRef, files[i])
-                    .then(()=>{
-                        setIsLoading(false)
-                        console.log("Image Uploaded")
-                    }).catch((err)=>{
-                        setIsLoading(false)
-                        console.log(err.message)
-                    })
-                }
+                const docId = doc.id;
+              const imgesUploaded = await uploadDocImages(urlArray, docId)
             }else{
                 setIsLoading(false)
                 console.log("Err: DOcument not created!!!")
             }
-            
-            doc?console.log(`Document added successfully!!!`):"Doc not added"
+            // setProductImages(urlArray)
+            //     console.log(urlArray, urlArray.length)
+            doc?console.log(`${doc.id} added successfully!!!`):"Doc not added"
             setIsLoading(false)
            }else{
             setIsLoading(false)
@@ -73,6 +94,8 @@ const ProductForm = () => {
             console.log(error)
         }  
         setIsLoading(false)
+        console.log(productImages)
+        
         document.querySelector("form").reset()
         setFiles([])
     }
@@ -221,6 +244,21 @@ const ProductForm = () => {
                         >{isLoading?"Loading...":"Submit"}
                         </button>
                     </div>
+                    <div className={styles.preview_wrapper}>
+                    {productImages &&
+                        productImages.map((url, key)=>(
+                            <div className={styles.preview} key={key}>
+                                <Image
+                                    src={url}
+                                    width={1}
+                                    height={1}
+                                    alt="productImages"
+                                    />
+                            </div>
+                        ))
+                    }</div>
+                    <progress value={progress} max={100}>{progress}%</progress>
+                    {/* <p>progress: {progress}% url={productImages}</p> */}
             </form>
         </div>
     );

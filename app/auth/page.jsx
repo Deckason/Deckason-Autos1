@@ -19,21 +19,23 @@ const Login = () => {
     })
 
     const {getDocument, usersRef, login, isLoading, setIsLoading,
-            setIsVerified, user,} = useAppContext()
+            setIsVerified, currentUser,} = useAppContext()
 
     const {push} = useRouter()
-    console.log(authentication.currentUser)
+    // console.log("Authentication "+authentication, "AuthCurrentUser "+authentication.currentUser, "stateUser "+currentUser)
     const handleLogin = async (data)=>{
         try {
             setIsLoading(true)
             const res = await login(data.email, data.password)
-            const user = await getDocument(usersRef)
-            user.docs.forEach(doc => {
-                if ((res.user.email == doc.data().email)) {
-                    setIsVerified(doc.data().verified)
-                    push("/post-product")
-                }
-            })
+            // const user = await getDocument(usersRef)
+            // if (user) {
+            //     user.docs.forEach(doc => {
+            //         if ((res.user.email == doc.data().email)) {
+            //             setIsVerified(doc.data().verified)
+                     res?push("/post-product"):""
+            //         }
+            //     })
+            // }
             setIsLoading(false)
 
         } catch (error) {
